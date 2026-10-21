@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="fr-CA" data-lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RénoMètre — Mesures LiDAR et soumissions</title>
+<meta name="description" content="RénoMètre mesure la pièce avec le LiDAR de l'iPhone et produit le plan, les murs, les quantités et la soumission PDF. Pour peintres, poseurs de plancher, entrepreneurs et estimateurs au Québec.">
+<link rel="icon" href="img/favicon-64.png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<meta property="og:title" content="RénoMètre — Measure &amp; Quote">
+<meta property="og:description" content="Scan a room with the iPhone LiDAR, get the plan, wall views, quantities and a bilingual quote PDF.">
+<meta property="og:image" content="https://renometer.app/img/icon-512.png">
+<style>
+  :root {
+    --blue-1: #4285ff;
+    --blue-2: #102eaa;
+    --navy: #0e2078;
+    --yellow: #ffc400;
+    --yellow-d: #d69600;
+    --ink: #121a33;
+    --muted: #55607a;
+    --bg: #f5f7fb;
+    --card: #ffffff;
+    --line: #e2e7f1;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #eef2fb;
+      --muted: #a7b1c8;
+      --bg: #0b1024;
+      --card: #141b36;
+      --line: #263056;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font: 17px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  /* language switch: everything exists twice, CSS shows one */
+  [data-lang="fr"] [lang="en"], [data-lang="en"] [lang="fr"] { display: none !important; }
+
+  header.top {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(16, 46, 170, .92);
+    backdrop-filter: saturate(160%) blur(12px);
+    -webkit-backdrop-filter: saturate(160%) blur(12px);
+    color: #fff;
+  }
+  header.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px; text-decoration: none; }
+  .brand img { width: 34px; height: 34px; border-radius: 8px; }
+  .langs button {
+    font: inherit; font-size: 14px; font-weight: 600; color: #fff;
+    background: transparent; border: 1px solid rgba(255,255,255,.45);
+    padding: 5px 12px; border-radius: 999px; cursor: pointer;
+  }
+  .langs button[aria-pressed="true"] { background: var(--yellow); color: var(--navy); border-color: var(--yellow); }
+
+  .hero {
+    background: linear-gradient(135deg, var(--blue-1), var(--blue-2));
+    color: #fff;
+    padding: 56px 0 72px;
+    overflow: hidden;
+  }
+  .hero .wrap { display: grid; grid-template-columns: 1.15fr .85fr; gap: 40px; align-items: center; }
+  .hero h1 { font-size: clamp(36px, 6vw, 58px); line-height: 1.05; margin: 14px 0 18px; letter-spacing: -.02em; }
+  .hero h1 em { font-style: normal; color: var(--yellow); }
+  .hero p.lead { font-size: 20px; opacity: .92; margin: 0 0 28px; max-width: 34em; }
+  .hero .icon { width: 108px; height: 108px; border-radius: 24px; box-shadow: 0 12px 40px rgba(0,0,0,.3); }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 22px; border-radius: 14px; font-weight: 700; text-decoration: none;
+    background: var(--yellow); color: var(--navy);
+  }
+  .btn.ghost { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,.6); }
+  .note { font-size: 14px; opacity: .8; margin-top: 14px; }
+  .phone {
+    justify-self: center;
+    width: min(300px, 80vw);
+    border-radius: 38px; padding: 10px; background: #0b0f1f;
+    box-shadow: 0 30px 70px rgba(0,0,0,.4);
+    transform: rotate(3deg);
+  }
+  .phone img { display: block; width: 100%; border-radius: 30px; }
+
+  section { padding: 72px 0; }
+  h2 { font-size: clamp(28px, 4vw, 38px); line-height: 1.15; margin: 0 0 12px; letter-spacing: -.01em; }
+  .sub { color: var(--muted); margin: 0 0 36px; max-width: 40em; }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .step { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 24px; }
+  .step .n {
+    width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--yellow); color: var(--navy); font-weight: 800; margin-bottom: 12px;
+  }
+  .step h3 { margin: 0 0 6px; font-size: 20px; }
+  .step p { margin: 0; color: var(--muted); }
+
+  .shots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 8px; }
+  .shots figure { margin: 0; }
+  .shots img { width: 100%; border-radius: 22px; border: 1px solid var(--line); background: #fff; display: block; }
+  .shots figcaption { margin-top: 10px; font-weight: 600; text-align: center; }
+
+  .features { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px 28px; }
+  .feature { display: flex; gap: 14px; align-items: flex-start; }
+  .feature .dot {
+    flex: none; width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center;
+    background: linear-gradient(135deg, var(--blue-1), var(--blue-2)); color: #fff; font-size: 17px;
+  }
+  .feature h3 { margin: 2px 0 2px; font-size: 18px; }
+  .feature p { margin: 0; color: var(--muted); font-size: 16px; }
+
+  .trades { display: flex; flex-wrap: wrap; gap: 10px; }
+  .trades span {
+    background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+    padding: 8px 16px; font-weight: 600; font-size: 15px;
+  }
+
+  .plans { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 820px; }
+  .plan { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 28px; }
+  .plan.pro { border: 2px solid var(--yellow); }
+  .plan h3 { margin: 0; font-size: 22px; }
+  .plan .price { font-size: 34px; font-weight: 800; margin: 8px 0 14px; }
+  .plan .price small { font-size: 16px; font-weight: 600; color: var(--muted); }
+  .plan ul { margin: 0; padding-left: 20px; color: var(--muted); }
+  .plan li { margin: 4px 0; }
+
+  .req {
+    display: flex; gap: 18px; align-items: center;
+    background: var(--card); border: 1px solid var(--line); border-left: 6px solid var(--yellow);
+    border-radius: 16px; padding: 20px 24px;
+  }
+  .req strong { display: block; font-size: 18px; }
+  .req p { margin: 2px 0 0; color: var(--muted); }
+
+  footer { background: var(--navy); color: #c9d3f5; padding: 36px 0; font-size: 15px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: center; justify-content: space-between; }
+  footer nav { display: flex; flex-wrap: wrap; gap: 18px; }
+  footer a { color: #fff; text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 820px) {
+    .hero .wrap { grid-template-columns: 1fr; }
+    .phone { transform: none; margin-top: 10px; }
+    .steps, .shots { grid-template-columns: 1fr; }
+    .shots figure { max-width: 360px; margin: 0 auto; }
+    .features, .plans { grid-template-columns: 1fr; }
+    section { padding: 56px 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <img src="img/apple-touch-icon.png" alt="">
+      <span lang="fr">RénoMètre</span><span lang="en">RenoMeter</span>
+    </a>
+    <div class="langs" role="group" aria-label="Langue / Language">
+      <button type="button" data-set="fr" aria-pressed="true">FR</button>
+      <button type="button" data-set="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <img class="icon" src="img/icon-512.png" alt="">
+        <h1 lang="fr">Scannez la pièce.<br><em>Envoyez la soumission.</em></h1>
+        <h1 lang="en">Scan the room.<br><em>Send the quote.</em></h1>
+        <p class="lead" lang="fr">RénoMètre mesure avec le LiDAR de l'iPhone et vous donne le plan, chaque mur, les quantités et une soumission PDF à votre nom — avant même de quitter le chantier.</p>
+        <p class="lead" lang="en">RenoMeter measures with the iPhone's LiDAR and gives you the plan, every wall, the quantities and a quote PDF under your name — before you leave the job site.</p>
+        <div class="cta">
+          <span class="btn" lang="fr">Bientôt sur l'App Store</span>
+          <span class="btn" lang="en">Coming soon to the App Store</span>
+          <a class="btn ghost" href="#comment" lang="fr">Comment ça marche</a>
+          <a class="btn ghost" href="#comment" lang="en">How it works</a>
+        </div>
+        <p class="note" lang="fr">iPhone 12 Pro ou plus récent (modèles Pro avec LiDAR) · Français et anglais</p>
+        <p class="note" lang="en">iPhone 12 Pro or later (Pro models with LiDAR) · French and English</p>
+      </div>
+      <div class="phone">
+        <img src="img/plan-fr.jpg" alt="Plan numérisé avec les dimensions de chaque mur" lang="fr">
+        <img src="img/plan-en.jpg" alt="Scanned floor plan with every wall's dimensions" lang="en">
+      </div>
+    </div>
+  </div>
+
+  <section id="comment">
+    <div class="wrap">
+      <h2 lang="fr">Du relevé à la soumission en trois étapes</h2>
+      <h2 lang="en">From survey to quote in three steps</h2>
+      <p class="sub" lang="fr">Fini le ruban, le calepin et la soirée à recopier les mesures.</p>
+      <p class="sub" lang="en">No more tape, notepad and an evening re-typing measurements.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="n">1</div>
+          <h3 lang="fr">Scannez</h3><h3 lang="en">Scan</h3>
+          <p lang="fr">Faites le tour de la pièce ou de l'étage avec l'iPhone. Murs, portes, fenêtres et hauteur de plafond sont mesurés au LiDAR (±2–3 cm).</p>
+          <p lang="en">Walk the room or the floor with the iPhone. Walls, doors, windows and ceiling height are measured by LiDAR (±2–3 cm).</p>
+        </div>
+        <div class="step">
+          <div class="n">2</div>
+          <h3 lang="fr">Estimez</h3><h3 lang="en">Estimate</h3>
+          <p lang="fr">Peinture, plancher, céramique, moulures : les surfaces nettes et les quantités sont calculées. Ajoutez vos prix, la main-d'œuvre et les tâches mur par mur.</p>
+          <p lang="en">Paint, flooring, tile, trim: net areas and quantities are calculated. Add your prices, labour and tasks wall by wall.</p>
+        </div>
+        <div class="step">
+          <div class="n">3</div>
+          <h3 lang="fr">Envoyez</h3><h3 lang="en">Send</h3>
+          <p lang="fr">Une soumission PDF bilingue avec votre logo, NEQ, TPS et TVQ, le plan et les élévations. Partagez-la directement du chantier.</p>
+          <p lang="en">A bilingual quote PDF with your logo, NEQ, GST and QST numbers, the plan and the elevations. Share it straight from the site.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="shots">
+        <figure>
+          <img src="img/plan-fr.jpg" alt="" lang="fr"><img src="img/plan-en.jpg" alt="" lang="en">
+          <figcaption lang="fr">Le plan, coté</figcaption><figcaption lang="en">The plan, dimensioned</figcaption>
+        </figure>
+        <figure>
+          <img src="img/murs-fr.jpg" alt="" lang="fr"><img src="img/murs-en.jpg" alt="" lang="en">
+          <figcaption lang="fr">Chaque mur et le plafond</figcaption><figcaption lang="en">Every wall and the ceiling</figcaption>
+        </figure>
+        <figure>
+          <img src="img/estimation-fr.jpg" alt="" lang="fr"><img src="img/estimation-en.jpg" alt="" lang="en">
+          <figcaption lang="fr">L'estimation, à vos prix</figcaption><figcaption lang="en">The estimate, at your prices</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--card);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+    <div class="wrap">
+      <h2 lang="fr">Fait pour les gens de métier</h2>
+      <h2 lang="en">Built for the trades</h2>
+      <p class="sub" lang="fr">Un profil par métier : l'app affiche les quantités et les lignes de soumission qui vous concernent.</p>
+      <p class="sub" lang="en">One profile per trade: the app shows the quantities and quote lines that matter to you.</p>
+      <div class="trades" lang="fr">
+        <span>Peintres</span><span>Poseurs de plancher</span><span>Carreleurs</span><span>Entrepreneurs généraux</span><span>Estimateurs</span><span>Designers</span><span>Constructeurs de galeries</span><span>Propriétaires</span>
+      </div>
+      <div class="trades" lang="en">
+        <span>Painters</span><span>Flooring installers</span><span>Tile setters</span><span>General contractors</span><span>Estimators</span><span>Designers</span><span>Deck builders</span><span>Homeowners</span>
+      </div>
+
+      <div class="features" style="margin-top:40px">
+        <div class="feature"><div class="dot">▦</div><div>
+          <h3 lang="fr">Plans et élévations</h3><h3 lang="en">Plans and elevations</h3>
+          <p lang="fr">Plan de plancher coté et vue de face de chaque mur, ouvertures déduites.</p>
+          <p lang="en">Dimensioned floor plan and a face-on view of every wall, openings deducted.</p></div></div>
+        <div class="feature"><div class="dot">$</div><div>
+          <h3 lang="fr">Soumission à votre image</h3><h3 lang="en">Quotes in your name</h3>
+          <p lang="fr">Logo, coordonnées, NEQ, TPS/TVQ, majoration et main-d'œuvre. PDF et liste de matériaux CSV.</p>
+          <p lang="en">Logo, contact details, NEQ, GST/QST, markup and labour. PDF and a materials CSV.</p></div></div>
+        <div class="feature"><div class="dot">FR</div><div>
+          <h3 lang="fr">Français et anglais</h3><h3 lang="en">French and English</h3>
+          <p lang="fr">L'app et les rapports dans les deux langues — choisissez la langue de chaque client.</p>
+          <p lang="en">The app and the reports in both languages — pick the language for each client.</p></div></div>
+        <div class="feature"><div class="dot">🔒</div><div>
+          <h3 lang="fr">Vos données restent sur votre iPhone</h3><h3 lang="en">Your data stays on your iPhone</h3>
+          <p lang="fr">Aucun compte, aucun serveur : les relevés ne quittent l'appareil que si vous les partagez.</p>
+          <p lang="en">No account, no server: scans leave the device only when you share them.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2 lang="fr">Prix</h2><h2 lang="en">Pricing</h2>
+      <p class="sub" lang="fr">Essayez tout gratuitement. Passez à Pro quand vous envoyez vos soumissions.</p>
+      <p class="sub" lang="en">Try everything for free. Go Pro when you send your quotes.</p>
+      <div class="plans">
+        <div class="plan">
+          <h3 lang="fr">Gratuit</h3><h3 lang="en">Free</h3>
+          <div class="price">0 $</div>
+          <ul lang="fr"><li>Relevés, plans, murs et estimations sur l'iPhone</li><li>Plan PDF avec filigrane</li><li>3 exportations d'essai</li></ul>
+          <ul lang="en"><li>Scans, plans, walls and estimates on the iPhone</li><li>Watermarked plan PDF</li><li>3 trial exports</li></ul>
+        </div>
+        <div class="plan pro">
+          <h3>Pro</h3>
+          <div class="price" lang="fr">199,99 $ <small>/ an</small></div>
+          <div class="price" lang="en">$199.99 <small>CAD / year</small></div>
+          <ul lang="fr"><li>Rapports et soumissions illimités</li><li>Plans sans filigrane</li><li>Toutes les exportations</li></ul>
+          <ul lang="en"><li>Unlimited reports and quotes</li><li>Clean, unwatermarked plans</li><li>Every export format</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="req">
+        <div style="font-size:30px">📱</div>
+        <div lang="fr"><strong>Il faut un iPhone avec LiDAR</strong><p>iPhone 12 Pro, 13 Pro, 14 Pro, 15 Pro, 16 Pro, 17 Pro (et Pro Max), iOS 17 ou plus récent.</p></div>
+        <div lang="en"><strong>Requires an iPhone with LiDAR</strong><p>iPhone 12 Pro, 13 Pro, 14 Pro, 15 Pro, 16 Pro, 17 Pro (and Pro Max), iOS 17 or later.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div lang="fr">© 2026 Alexandre Blais · Fait au Québec</div>
+    <div lang="en">© 2026 Alexandre Blais · Made in Québec</div>
+    <nav>
+      <a href="support.html" lang="fr">Soutien</a><a href="support.html#en" lang="en">Support</a>
+      <a href="privacy.html" lang="fr">Confidentialité</a><a href="privacy.html#en" lang="en">Privacy</a>
+      <a href="mailto:alexandre.blais@gmail.com">alexandre.blais@gmail.com</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    function set(lang) {
+      root.setAttribute('data-lang', lang);
+      root.setAttribute('lang', lang === 'fr' ? 'fr-CA' : 'en-CA');
+      document.title = lang === 'fr' ? 'RénoMètre — Mesures LiDAR et soumissions' : 'RenoMeter — LiDAR measurements and quotes';
+      document.querySelectorAll('.langs button').forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b.dataset.set === lang));
+      });
+      try { localStorage.setItem('lang', lang); } catch (e) {}
+    }
+    var saved = null;
+    try { saved = localStorage.getItem('lang'); } catch (e) {}
+    var fromUrl = /[?&]lang=(fr|en)/.exec(location.search);
+    var guess = (navigator.language || 'fr').toLowerCase().indexOf('fr') === 0 ? 'fr' : 'en';
+    set(fromUrl ? fromUrl[1] : (saved || guess));
+    document.querySelectorAll('.langs button').forEach(function (b) {
+      b.addEventListener('click', function () { set(b.dataset.set); });
+    });
+  })();
+</script>
+</body>
+</html>
