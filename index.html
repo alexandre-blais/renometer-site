@@ -12,24 +12,27 @@
 <meta property="og:image" content="https://renometer.app/img/icon-512.png">
 <style>
   :root {
-    --blue-1: #4285ff;
-    --blue-2: #102eaa;
-    --navy: #0e2078;
-    --yellow: #ffc400;
-    --yellow-d: #d69600;
-    --ink: #121a33;
-    --muted: #55607a;
-    --bg: #f5f7fb;
+    /* The app icon's palette (docs/UI-PANEL-2026-10-27.md): navy case, paper, cyan hologram.
+       The old names stay so the rules below keep working: "yellow" is now the hologram cyan
+       (navy text on it, 9.7:1) and the "blue" gradient is the navy case. */
+    --blue-1: #202f41;
+    --blue-2: #091220;
+    --navy: #091220;
+    --yellow: #4ccadd;
+    --yellow-d: #2d7b9b;
+    --ink: #0f1b2b;
+    --muted: #4a5a6e;
+    --bg: #f3f5f8;
     --card: #ffffff;
-    --line: #e2e7f1;
+    --line: #d3dce5;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --ink: #eef2fb;
-      --muted: #a7b1c8;
-      --bg: #0b1024;
-      --card: #141b36;
-      --line: #263056;
+      --ink: #e8eef4;
+      --muted: #99acbc;
+      --bg: #0b1322;
+      --card: #162234;
+      --line: #2b3b50;
     }
   }
   * { box-sizing: border-box; }
@@ -325,7 +328,7 @@
     <nav>
       <a href="support.html" lang="fr">Soutien</a><a href="support.html#en" lang="en">Support</a>
       <a href="privacy.html" lang="fr">Confidentialité</a><a href="privacy.html#en" lang="en">Privacy</a>
-      <a href="mailto:alexandre.blais@gmail.com">alexandre.blais@gmail.com</a>
+      <a href="mailto:support@renometer.app">support@renometer.app</a>
     </nav>
   </div>
 </footer>
